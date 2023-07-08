@@ -176,7 +176,11 @@ local deferred = {
 		Resolve = function(self, ...)
 				local p = self._promise;
 				if (p._state ~= 'pending') then
-						error("Tried to resolve an already " .. (state == "done" and "resolved" or "rejected") .. " deferred!", 2);
+
+						-- Fasteroid: These used to call error(), but that started breaking prop hunt.
+						--            Don't change them back, like ever.
+						
+						debug.traceback(nil, "Tried to resolve an already " .. (state == "done" and "resolved" or "rejected") .. " deferred!", 2)
 				end
 				p._state = 'done';
 				p._res = {...};
@@ -192,7 +196,7 @@ local deferred = {
 		Reject = function(self, ...)
 				local p = self._promise;
 				if (p._state ~= 'pending') then
-						error("Tried to reject an already " .. (state == "done" and "resolved" or "rejected") .. " deferred!", 2);
+						debug.traceback(nil, "Tried to reject an already " .. (state == "done" and "resolved" or "rejected") .. " deferred!", 2)
 				end
 				p._state = 'fail';
 				p._res = {...};
@@ -212,7 +216,7 @@ local deferred = {
 		Notify = function(self, ...)
 				local p = self._promise;
 				if (p._state ~= 'pending') then
-						error("Tried to notify an already " .. (state == "done" and "resolved" or "rejected") .. " deferred!", 2);
+						debug.traceback(nil, "Tried to notify an already " .. (state == "done" and "resolved" or "rejected") .. " deferred!", 2)
 				end
 				p._progd = p._progd or {};
 				table.insert(p._progd, {...});
